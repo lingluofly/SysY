@@ -1,0 +1,28 @@
+# 编译生成的文件夹
+build/
+
+# 可执行文件
+sysy_compiler.exe
+
+# CMake相关文件
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+# 临时文件
+*.tmp
+*.temp
+
+# 日志文件
+*.log
+
+# IDE相关文件
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 文档转换文件
+*.docx~ 
+*.md~

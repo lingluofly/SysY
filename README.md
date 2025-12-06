@@ -55,8 +55,8 @@ SysY/
 
 ## 功能特性
 
-- 词法分析：基于Flex实现
-- 语法分析：基于Bison实现
+- 词法分析：直接用C++编写
+- 语法分析：直接用C++编写
 - 语义分析：实现类型检查、作用域管理等
 - 中间代码生成：生成LLVM IR
 
@@ -87,7 +87,7 @@ SysY/
 
 ## 构建方法
 
-1. 安装CMake、Flex和Bison
+1. 安装CMake
 2. 创建build目录：`mkdir build && cd build`
 3. 运行CMake：`cmake ..`
 4. 编译项目：`make`

@@ -34,8 +34,7 @@ set(HEADERS
 # 创建可执行文件
 add_executable(sysy_compiler ${SOURCES} ${HEADERS})
 
-# 链接库
-target_link_libraries(sysy_compiler ${FLEX_LIBRARIES})
+# 链接库（无额外依赖）
 
 # 安装目标
 install(TARGETS sysy_compiler DESTINATION bin)
