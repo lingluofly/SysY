@@ -60,8 +60,31 @@ function Test-All {
     }
 }
 
+# 检查是否存在 build 目录
+if (-not (Test-Path -Path "build" -PathType Container)) {
+    Write-Host "✗ 错误：build 目录不存在，请先执行构建步骤！" -ForegroundColor Red
+    Write-Host "构建步骤："
+    Write-Host "1. 安装 CMake"
+    Write-Host "2. 创建 build 目录：mkdir build && cd build"
+    Write-Host "3. 运行 CMake：cmake .."
+    Write-Host "4. 编译项目：make"
+    exit 1
+}
+
 # 进入 build 目录
 Set-Location -Path "build"
+
+# 检查编译器是否存在
+$CompilerPath = ".\sysy_compiler.exe"
+if (-not (Test-Path -Path $CompilerPath -PathType Leaf)) {
+    Write-Host "✗ 错误：编译器 $CompilerPath 不存在，请先执行构建步骤！" -ForegroundColor Red
+    Write-Host "构建步骤："
+    Write-Host "1. 安装 CMake"
+    Write-Host "2. 创建 build 目录：mkdir build && cd build"
+    Write-Host "3. 运行 CMake：cmake .."
+    Write-Host "4. 编译项目：make"
+    exit 1
+}
 
 # 运行所有测试
 $Success = Test-All

@@ -1,8 +1,0 @@
-E:/alwaysused/c_c++/c++/SysY/build/CMakeFiles/sysy_compiler.dir
-E:/alwaysused/c_c++/c++/SysY/build/CMakeFiles/test.dir
-E:/alwaysused/c_c++/c++/SysY/build/CMakeFiles/edit_cache.dir
-E:/alwaysused/c_c++/c++/SysY/build/CMakeFiles/rebuild_cache.dir
-E:/alwaysused/c_c++/c++/SysY/build/CMakeFiles/list_install_components.dir
-E:/alwaysused/c_c++/c++/SysY/build/CMakeFiles/install.dir
-E:/alwaysused/c_c++/c++/SysY/build/CMakeFiles/install/local.dir
-E:/alwaysused/c_c++/c++/SysY/build/CMakeFiles/install/strip.dir

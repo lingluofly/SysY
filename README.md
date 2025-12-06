@@ -60,31 +60,6 @@ SysY/
 - 语义分析：实现类型检查、作用域管理等
 - 中间代码生成：生成LLVM IR
 
-## 快速启动
-
-### 环境要求
-- Windows系统
-- PowerShell 5.0及以上
-- CMake 4.2.0及以上
-
-### 启动步骤
-1. 打开PowerShell终端
-2. 导航到项目根目录：`cd e:\alwaysused\c_c++\c++\SysY`
-3. 进入build目录：`cd build`
-4. 运行测试脚本：`..\tools\test_runner.ps1`
-
-### 预期结果
-所有7个测试用例都应该编译成功，输出如下：
-```
-✓ work1_test/basic_test.sy 编译成功
-✓ work1_test/array_loop_test.sy 编译成功
-✓ work1_test/condition_test.sy 编译成功
-✓ work1_test/function_test.sy 编译成功
-✓ work1_test/nested_loop_test.sy 编译成功
-✓ work1_test/variable_test.sy 编译成功
-✓ work1_test/while_loop_test.sy 编译成功
-```
-
 ## 构建方法
 
 1. 安装CMake
@@ -92,19 +67,38 @@ SysY/
 3. 运行CMake：`cmake ..`
 4. 编译项目：`make`
 
+## 快速启动
+
+### 环境要求
+- Windows系统
+- PowerShell 5.0及以上
+- CMake 4.2.0及以上
+
+### 启动步骤 
+1. 打开PowerShell终端 
+2. 导航到项目根目录：`cd e:\alwaysused\c_c++\c++\SysY` 
+3. 进入build目录：`cd build` 
+4. 运行测试脚本：`..\tools\test_runner.ps1` 
+
+
+### 预期结果 
+所有7个测试用例都应该编译成功，输出如下： 
+``` 
+✓ work1_test/basic_test.sy 编译成功 
+✓ work1_test/array_loop_test.sy 编译成功 
+✓ work1_test/condition_test.sy 编译成功 
+✓ work1_test/function_test.sy 编译成功 
+✓ work1_test/nested_loop_test.sy 编译成功 
+✓ work1_test/variable_test.sy 编译成功 
+✓ work1_test/while_loop_test.sy 编译成功 
+```
+
 ## 使用方法
 
 ```bash
 ./sysy_compiler <input_file.sy>
 ```
 
-## 测试
-
-运行自动化测试：
-
-```bash
-..\tools\test_runner.ps1
-```
 
 ## 参考文档
 
