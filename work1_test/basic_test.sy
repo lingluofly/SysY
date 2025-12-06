@@ -1,0 +1,4 @@
+int main() {
+    int student_id = 20220101;
+    return student_id;
+}

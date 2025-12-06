@@ -1,0 +1,17 @@
+int add(int a, int b) {
+    return a + b;
+}
+
+int sub(int a, int b) {
+    return a - b;
+}
+
+int main() {
+    int student_id = 20220101;
+    int x = 100;
+    int y = 50;
+    int sum = add(x, y);
+    int diff = sub(x, y);
+    
+    return sum + diff;
+}

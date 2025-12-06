@@ -1,0 +1,14 @@
+int main() {
+    int student_id = 20220101;
+    int i = 0;
+    int j = 0;
+    int product = 1;
+    
+    for (i = 1; i <= 3; i = i + 1) {
+        for (j = 1; j <= 3; j = j + 1) {
+            product = product * (i * j);
+        }
+    }
+    
+    return product;
+}

@@ -1,0 +1,10 @@
+int main() {
+    int student_id = 20220101;
+    int a = 10;
+    int b = 20;
+    int c;
+    
+    c = a + b;
+    
+    return c;
+}
