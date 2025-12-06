@@ -14,7 +14,10 @@ SysY/
 ├── docx/              # 文档目录
 │   ├── Flex词法分析实验工具指导.pdf
 │   ├── SysY2022语言定义-V1.pdf
-│   └── 任务4.1 SysY语言的语法和语义规范理解.pdf
+│   ├── work1.md
+│   ├── work2.md
+│   ├── work3.md
+│   └── work4.md
 ├── include/           # 头文件目录
 │   ├── Lexer.h
 │   ├── Parser.h
@@ -24,17 +27,30 @@ SysY/
 │   ├── symbol_table.h
 │   └── token.h
 ├── src/               # 源代码目录
+│   ├── ast.cpp
 │   ├── lexer.cpp
+│   ├── main.cpp
 │   ├── parser.cpp
 │   ├── scanner.l
 │   ├── semantic_analyzer.cpp
 │   └── symbol_table.cpp
-├── test/              # 测试文件目录
-│   ├── array_loop_test.sy
-│   └── basic_test.sy
+├── tests/             # 测试文件目录
+│   ├── work1_test/   # 第一阶段测试用例
+│   │   ├── array_loop_test.sy
+│   │   ├── basic_test.sy
+│   │   ├── condition_test.sy
+│   │   ├── function_test.sy
+│   │   ├── nested_loop_test.sy
+│   │   ├── variable_test.sy
+│   │   └── while_loop_test.sy
+│   └── work2_test/   # 第二阶段测试用例
+│       ├── example1.sy
+│       ├── example2.sy
+│       ├── example3.sy
+│       ├── example3_error1.sy
+│       └── example3_error2.sy
 └── tools/             # 工具目录
-    ├── test_runner.ps1
-    └── test_runner.py
+    └── test_runner.ps1
 ```
 
 ## 功能特性
