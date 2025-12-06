@@ -62,10 +62,23 @@ SysY/
 
 ## 构建方法
 
-1. 安装CMake
-2. 创建build目录：`mkdir build && cd build`
+### 前提条件
+- 安装CMake 4.2.0及以上
+- 安装C++编译器（Visual Studio 2019+ 或 MinGW-w64）
+
+### 使用 Visual Studio 构建
+1. 创建build目录：`mkdir build`
+2. 进入build目录：`cd build`
 3. 运行CMake：`cmake ..`
-4. 编译项目：`make`
+4. 编译项目：`cmake --build .`
+
+### 使用 MinGW-w64 构建
+1. **配置环境变量**：将 MinGW-w64 的 `bin` 目录添加到系统 PATH（如：`E:\mingw64\bin`）
+2. **清理旧构建（可选）**：如果之前使用过其他编译器，删除旧的 build 目录：`rm -rf build`
+3. 创建build目录：`mkdir build`
+4. 进入build目录：`cd build`
+5. 运行CMake（指定MinGW生成器）：`cmake .. -G "MinGW Makefiles"`
+6. 编译项目（使用MinGW的make命令）：`mingw32-make`
 
 ## 快速启动
 
@@ -73,13 +86,12 @@ SysY/
 - Windows系统
 - PowerShell 5.0及以上
 - CMake 4.2.0及以上
+- C++编译器（推荐安装Visual Studio 2019及以上版本，或MinGW-w64）
 
-### 启动步骤 
+### 自动化测试
 1. 打开PowerShell终端 
 2. 导航到项目根目录：`cd e:\alwaysused\c_c++\c++\SysY` 
-3. 进入build目录：`cd build` 
-4. 运行测试脚本：`..\tools\test_runner.ps1` 
-
+3. 运行测试脚本：`tools\test_runner.ps1` 
 
 ### 预期结果 
 所有7个测试用例都应该编译成功，输出如下： 
