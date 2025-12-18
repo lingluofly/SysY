@@ -36,17 +36,43 @@ function Run-Test {
         
         # 使用编译器编译并捕获输出（避免直接输出导致重复）
         Write-Host "运行 $TestFile..."
-        $Output = & .\sysy_compiler.exe $TestFile 2>&1
+        $CompilerPath = "..\build\sysy_compiler.exe"
+        $Output = & "$CompilerPath" $TestFile 2>&1
         $ExitCode = $LASTEXITCODE
         
+        # 检查是否有错误输出
+        $HasSyntaxError = $false  # 语法错误：退出码非0
+        $HasSemanticError = $false  # 语义错误：输出包含"Error type"但退出码为0
+        $HasLexicalError = $false   # 词法错误：退出码非0
+
+        # 检查退出码
+        if ($ExitCode -ne 0) {
+            $HasSyntaxError = $true  # 语法错误会抛出异常，导致退出码非0
+            $HasLexicalError = $true  # 词法错误也会导致退出码非0
+        }
+
+        # 检查输出中是否有语义错误信息
+        foreach ($line in $Output) {
+            if ($line -match "^Error type") {
+                if ($line -match "Error type B") {
+                    # 词法错误
+                    $HasLexicalError = $true
+                } else {
+                    # 语义错误
+                    $HasSemanticError = $true
+                }
+                break
+            }
+        }
+    
         # 只显示一次捕获的输出
         if ($Output) {
             $Output | ForEach-Object { Write-Host "  $_" }
         }
         Write-Host "退出码: $ExitCode"
-        
+    
         if ($ShouldFail) {
-            if ($ExitCode -ne 0) {
+            if ($HasSyntaxError -or $HasSemanticError -or $HasLexicalError) {
                 Write-Host " ✓ [预期失败]" -ForegroundColor Green
                 return $true
             } else {
@@ -54,7 +80,7 @@ function Run-Test {
                 return $false
             }
         } else {
-            if ($ExitCode -eq 0) {
+            if (-not $HasSyntaxError -and -not $HasSemanticError -and -not $HasLexicalError -and $ExitCode -eq 0) {
                 Write-Host " ✓ [通过]" -ForegroundColor Green
                 return $true
             } else {
@@ -134,7 +160,6 @@ function Test-All {
                 "..\tests\work3_test\basic_variables.sy",
                 "..\tests\work3_test\array_program.sy",
                 "..\tests\work3_test\function_program.sy",
-                "..\tests\work3_test\multiple_declarations.sy",
                 "..\tests\work3_test\control_flow.sy"
             );
             ShouldFail = $false
@@ -151,20 +176,12 @@ function Test-All {
             ShouldFail = $true
         },
         
-        # Work 4 测试用例 - 语义分析
+        # Work 4 测试用例 - 语义分析（正确示例）
         @{
             Work = "Work 4";
             Description = "语义分析测试";
             Tests = @(
-                "..\tests\work4_test\type_mismatch_return.sy",
-                "..\tests\work4_test\type_mismatch_operands.sy",
-                "..\tests\work4_test\undefined_variable.sy",
-                "..\tests\work4_test\undefined_function.sy",
-                "..\tests\work4_test\redefined_variable.sy",
-                "..\tests\work4_test\redefined_function.sy",
-                "..\tests\work4_test\wrong_argument_count.sy",
-                "..\tests\work4_test\non_integer_array_index.sy",
-                "..\tests\work4_test\type_mismatch_assignment.sy"
+                # 这里可以添加没有语义错误的正常测试用例
             );
             ShouldFail = $false
         },
@@ -174,6 +191,16 @@ function Test-All {
             Work = "Work 4";
             Description = "语义分析错误测试";
             Tests = @(
+                "..\tests\work4_test\type_mismatch_return.sy",
+                "..\tests\work4_test\type_mismatch_operands.sy",
+                "..\tests\work4_test\undefined_variable.sy",
+                "..\tests\work4_test\undefined_function.sy",
+                "..\tests\work4_test\redefined_variable.sy",
+                "..\tests\work4_test\redefined_function.sy",
+                "..\tests\work4_test\wrong_argument_count.sy",
+                "..\tests\work4_test\non_integer_array_index.sy",
+                "..\tests\work4_test\type_mismatch_assignment.sy",
+                "..\tests\work3_test\multiple_declarations.sy",  # 这个文件有类型不匹配的语义错误
                 "..\tests\work4_test\const_assignment_error.sy"
             );
             ShouldFail = $true
@@ -229,7 +256,10 @@ function Test-All {
     Write-Host "=====================================================" -ForegroundColor Cyan
     
     foreach ($Result in $WorkResults) {
-        $Percentage = [math]::Round(($Result.Passed / $Result.Total) * 100, 2)
+        $Percentage = 0
+        if ($Result.Total -ne 0) {
+            $Percentage = [math]::Round(($Result.Passed / $Result.Total) * 100, 2)
+        }
         Write-Host "[$($Result.Work)] $($Result.Description): $($Result.Passed)/$($Result.Total) ($Percentage%)"
     }
     
