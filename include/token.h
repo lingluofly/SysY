@@ -43,7 +43,7 @@ public:  // 添加公共访问修饰符
     std::string toString() const {
         switch (type) {
             // 关键字
-            case TokenType::INT: return "INT int";
+            case TokenType::INT: return "INTTK int";
             case TokenType::FLOAT: return "FLOAT float";
             case TokenType::CONST: return "CONST const";
             case TokenType::VOID: return "VOID void";
@@ -60,7 +60,7 @@ public:  // 添加公共访问修饰符
             case TokenType::VOID_TYPE: return "VOID_TYPE void";
             
             // 标识符和常量
-            case TokenType::IDENT: return "IDENT " + stringValue;
+            case TokenType::IDENT: return "ID " + stringValue;
             case TokenType::INT_CONST: return "INTCON " + std::to_string(intValue);
             case TokenType::FLOAT_CONST: return "FLOATCON " + std::to_string(floatValue);
             
@@ -88,8 +88,8 @@ public:  // 添加公共访问修饰符
             case TokenType::RPAREN: return "RPARENT )";
             case TokenType::LBRACKET: return "LBRACKET [";
             case TokenType::RBRACKET: return "RBRACKET ]";
-            case TokenType::LBRACE: return "LBRACE {";
-            case TokenType::RBRACE: return "RBRACE }";
+            case TokenType::LBRACE: return "LBRACE (";
+            case TokenType::RBRACE: return "RBRACE )";
             case TokenType::SEMICOLON: return "SEMICN ;";
             case TokenType::COMMA: return "COMMA ,";
             
