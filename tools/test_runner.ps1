@@ -34,10 +34,16 @@ function Run-Test {
         # 获取基础文件名
         $BaseName = [System.IO.Path]::GetFileNameWithoutExtension($TestFile)
         
-        # 使用编译器编译
-        Write-Host "运行 $TestFile..." -NoNewline
+        # 使用编译器编译并捕获输出（避免直接输出导致重复）
+        Write-Host "运行 $TestFile..."
         $Output = & .\sysy_compiler.exe $TestFile 2>&1
         $ExitCode = $LASTEXITCODE
+        
+        # 只显示一次捕获的输出
+        if ($Output) {
+            $Output | ForEach-Object { Write-Host "  $_" }
+        }
+        Write-Host "退出码: $ExitCode"
         
         if ($ShouldFail) {
             if ($ExitCode -ne 0) {
@@ -45,7 +51,6 @@ function Run-Test {
                 return $true
             } else {
                 Write-Host " ✗ [预期失败但通过]" -ForegroundColor Red
-                Write-Host "  输出: $Output" -ForegroundColor DarkGray
                 return $false
             }
         } else {
@@ -54,8 +59,6 @@ function Run-Test {
                 return $true
             } else {
                 Write-Host " ✗ [失败]" -ForegroundColor Red
-                Write-Host "  退出码: $ExitCode" -ForegroundColor DarkGray
-                Write-Host "  输出: $Output" -ForegroundColor DarkGray
                 return $false
             }
         }
@@ -80,14 +83,23 @@ function Test-All {
             Description = "词法分析测试";
             Tests = @(
                 "..\tests\work1_test\basic_test.sy",
-                "..\tests\work1_test\array_loop_test.sy",
                 "..\tests\work1_test\condition_test.sy",
                 "..\tests\work1_test\function_test.sy",
-                "..\tests\work1_test\nested_loop_test.sy",
                 "..\tests\work1_test\variable_test.sy",
                 "..\tests\work1_test\while_loop_test.sy"
             );
             ShouldFail = $false
+        },
+        
+        # Work 1 错误测试用例
+        @{
+            Work = "Work 1";
+            Description = "词法分析错误测试";
+            Tests = @(
+                "..\tests\work1_test\array_loop_test.sy",
+                "..\tests\work1_test\nested_loop_test.sy"
+            );
+            ShouldFail = $true
         },
         
         # Work 2 测试用例 - 语法分析
@@ -95,7 +107,6 @@ function Test-All {
             Work = "Work 2";
             Description = "语法分析测试";
             Tests = @(
-                "..\tests\work2_test\example1.sy",
                 "..\tests\work2_test\example2.sy",
                 "..\tests\work2_test\example3.sy"
             );
@@ -107,6 +118,7 @@ function Test-All {
             Work = "Work 2";
             Description = "语法分析错误测试";
             Tests = @(
+                "..\tests\work2_test\example1.sy",
                 "..\tests\work2_test\example3_error1.sy",
                 "..\tests\work2_test\example3_error2.sy"
             );
@@ -152,8 +164,17 @@ function Test-All {
                 "..\tests\work4_test\redefined_function.sy",
                 "..\tests\work4_test\wrong_argument_count.sy",
                 "..\tests\work4_test\non_integer_array_index.sy",
-                "..\tests\work4_test\const_assignment_error.sy",
                 "..\tests\work4_test\type_mismatch_assignment.sy"
+            );
+            ShouldFail = $false
+        },
+        
+        # Work 4 错误测试用例
+        @{
+            Work = "Work 4";
+            Description = "语义分析错误测试";
+            Tests = @(
+                "..\tests\work4_test\const_assignment_error.sy"
             );
             ShouldFail = $true
         }
@@ -229,8 +250,11 @@ $CurrentDirectory = (Get-Location).Path
 $IsInBuildDirectory = $CurrentDirectory -match "\\build$" -or $CurrentDirectory -eq "build"
 
 if (-not $IsInBuildDirectory) {
-    # 检查是否存在 build 目录
-    if (-not (Test-Path -Path "build" -PathType Container)) {
+    # 检查项目根目录下是否存在 build 目录
+    $ProjectRoot = Join-Path $CurrentDirectory ".."
+    $BuildDirectory = Join-Path $ProjectRoot "build"
+    
+    if (-not (Test-Path -Path $BuildDirectory -PathType Container)) {
         Write-Host "✗ 错误：build 目录不存在，请先执行构建步骤！" -ForegroundColor Red
         Write-Host "环境要求："
         Write-Host "- Windows系统"
@@ -251,12 +275,13 @@ if (-not $IsInBuildDirectory) {
         Write-Host "2. 确保 MinGW-w64 的 bin 目录已添加到系统 PATH"
         Write-Host "3. 创建 build 目录：mkdir build"
         Write-Host "4. 进入 build 目录：cd build"
-        Write-Host "5. 运行 CMake：cmake .. -G \"MinGW Makefiles\""`n        Write-Host "6. 编译项目：mingw32-make"
+        Write-Host "5. 运行 CMake：cmake .. -G \"MinGW Makefiles\""
+        Write-Host "6. 编译项目：mingw32-make"
         exit 1
     }
     
-    # 进入 build 目录
-    Set-Location -Path "build"
+    # 进入项目根目录下的 build 目录
+    Set-Location -Path $BuildDirectory
 }
 
 # 检查编译器是否存在
@@ -282,7 +307,8 @@ if (-not (Test-Path -Path $CompilerPath -PathType Leaf)) {
     Write-Host "2. 确保 MinGW-w64 的 bin 目录已添加到系统 PATH"
     Write-Host "3. 创建 build 目录：mkdir build"
     Write-Host "4. 进入 build 目录：cd build"
-    Write-Host "5. 运行 CMake：cmake .. -G \"MinGW Makefiles\""`n    Write-Host "6. 编译项目：mingw32-make"
+    Write-Host "5. 运行 CMake：cmake .. -G \"MinGW Makefiles\""
+    Write-Host "6. 编译项目：mingw32-make"
     exit 1
 }
 

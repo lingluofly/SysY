@@ -43,12 +43,35 @@ SysY/
 │   │   ├── nested_loop_test.sy
 │   │   ├── variable_test.sy
 │   │   └── while_loop_test.sy
-│   └── work2_test/   # 第二阶段测试用例
-│       ├── example1.sy
-│       ├── example2.sy
-│       ├── example3.sy
-│       ├── example3_error1.sy
-│       └── example3_error2.sy
+│   ├── work2_test/   # 第二阶段测试用例
+│   │   ├── example1.sy
+│   │   ├── example2.sy
+│   │   ├── example3.sy
+│   │   ├── example3_error1.sy
+│   │   └── example3_error2.sy
+│   ├── work3_test/   # 第三阶段测试用例
+│   │   ├── array_program.sy
+│   │   ├── basic_variables.sy
+│   │   ├── control_flow.sy
+│   │   ├── correct_syntax.sy
+│   │   ├── empty_program.sy
+│   │   ├── function_program.sy
+│   │   ├── mismatched_brackets.sy
+│   │   ├── missing_semicolon.sy
+│   │   ├── multiple_declarations.sy
+│   │   └── number_constants.sy
+│   └── work4_test/   # 第四阶段测试用例
+│       ├── const_assignment_error.sy
+│       ├── non_integer_array_index.sy
+│       ├── redefined_function.sy
+│       ├── redefined_variable.sy
+│       ├── return_type_mismatch.sy
+│       ├── type_mismatch_assignment.sy
+│       ├── type_mismatch_operands.sy
+│       ├── type_mismatch_return.sy
+│       ├── undefined_function.sy
+│       ├── undefined_variable.sy
+│       └── wrong_argument_count.sy
 └── tools/             # 工具目录
     └── test_runner.ps1
 ```
@@ -94,15 +117,84 @@ SysY/
 3. 运行测试脚本：`tools\test_runner.ps1` 
 
 ### 预期结果 
-所有7个测试用例都应该编译成功，输出如下： 
+根据指定的work参数，测试脚本会运行相应的测试用例。例如运行Work 2测试：
 ``` 
-✓ work1_test/basic_test.sy 编译成功 
-✓ work1_test/array_loop_test.sy 编译成功 
-✓ work1_test/condition_test.sy 编译成功 
-✓ work1_test/function_test.sy 编译成功 
-✓ work1_test/nested_loop_test.sy 编译成功 
-✓ work1_test/variable_test.sy 编译成功 
-✓ work1_test/while_loop_test.sy 编译成功 
+[Work 2] 语法分析测试
+-----------------------------------------------------
+运行 ..\tests\work2_test\example2.sy...
+输出:
+  INTTK int
+  ID inc
+  LPARENT (
+  RPARENT )
+  LBRACE (
+  INTTK int
+  ID i
+  SEMICN ;
+  ID i
+  ASSIGN =
+  ID i
+  PLUS +
+  INTCON 1
+  SEMICN ;
+  RBRACE )
+  Warning: function 'inc' should return a value
+退出码: 0
+ ✓ [通过]
+运行 ..\tests\work2_test\example3.sy...
+输出:
+  INTTK int
+  ID main
+  LPARENT (
+  RPARENT )
+  LBRACE (
+  INTTK int
+  ID i
+  ASSIGN =
+  INTCON 83
+  SEMICN ;
+  INTTK int
+  ID j
+  ASSIGN =
+  INTCON 63
+  SEMICN ;
+  RBRACE )
+  Warning: function 'main' should return a value
+退出码: 0
+ ✓ [通过]
+-----------------------------------------------------
+[Work 2] 语法分析测试: 2/2 通过
+
+[Work 2] 语法分析错误测试
+-----------------------------------------------------
+运行 ..\tests\work2_test\example1.sy...
+输出:
+  Error type A at line 4 : Invalid character '~'
+退出码: 1
+ ✓ [预期失败]
+运行 ..\tests\work2_test\example3_error1.sy...
+输出:
+  Error type A at line 3 : illegal octal number '09'
+退出码: 1
+ ✓ [预期失败]
+运行 ..\tests\work2_test\example3_error2.sy...
+输出:
+  Error type A at line 4 : illegal hexadecimal number '0x3G'
+退出码: 1
+ ✓ [预期失败]
+-----------------------------------------------------
+[Work 2] 语法分析错误测试: 3/3 通过
+
+=====================================================
+测试汇总报告
+=====================================================
+[Work 2] 语法分析测试: 2/2 (100%)
+[Work 2] 语法分析错误测试: 3/3 (100%)
+-----------------------------------------------------
+总测试结果: 5/5 (100%) 通过
+=====================================================
+
+🎉 所有测试通过！
 ```
 
 ## 使用方法
