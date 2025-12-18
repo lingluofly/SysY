@@ -318,14 +318,23 @@ Token Lexer::getNextToken() {
 // 预取下一个Token（不改变词法分析器状态）
 // 保存当前状态，获取下一个Token，然后恢复状态
 Token Lexer::peekToken() {
+    return peekToken(1);
+}
+
+// 预取第n个Token（不改变词法分析器状态）
+// 保存当前状态，循环获取n个Token，然后恢复状态
+Token Lexer::peekToken(int n) {
     // 保存当前的lexer状态
     size_t savedPosition = position;
     size_t savedLine = line;
     size_t savedColumn = column;
     char savedCurrentChar = currentChar;
     
-    // 获取下一个token
-    Token token = getNextToken();
+    // 获取第n个token
+    Token token;
+    for (int i = 0; i < n; ++i) {
+        token = getNextToken();
+    }
     
     // 恢复lexer状态
     position = savedPosition;

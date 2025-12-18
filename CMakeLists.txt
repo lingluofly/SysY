@@ -17,6 +17,7 @@ set(SOURCES
     src/ast.cpp
     src/semantic_analyzer.cpp
     src/symbol_table.cpp
+    src/print_visitor.cpp
     src/main.cpp
 )
 

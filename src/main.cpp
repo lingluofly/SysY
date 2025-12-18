@@ -4,6 +4,7 @@
 #include "../include/Lexer.h"
 #include "../include/Parser.h"
 #include "../include/semantic_analyzer.h"
+#include "../include/print_visitor.h"
 
 // 编译器主函数
 // 负责处理命令行参数、读取源代码文件、执行编译流程并输出结果
@@ -63,12 +64,11 @@ int main(int argc, char* argv[]) {
         return 1;
     }
     
-    // 如果没有词法错误，输出所有Token信息
+    // 如果没有词法错误，继续执行语法和语义分析
+    // 输出词法单元列表
     for (const auto& t : tokens) {
         std::cout << t.toString() << std::endl;
     }
-    
-    // 如果没有词法错误，继续执行语法和语义分析
     try {
         // 重置词法分析器
         Lexer lexer2(source);
@@ -84,11 +84,33 @@ int main(int argc, char* argv[]) {
         
         // 执行语义分析
         compUnit->accept(analyzer);
+        
+        // 不打印语法树，只保留错误输出
 
         // 编译成功，不输出额外提示，只输出词法单元列表
     } catch (const std::exception& e) {
         // 捕获并处理编译过程中的异常
-        std::cerr << "Error: " << e.what() << std::endl;
+        std::string errorMsg = e.what();
+        size_t firstColon = errorMsg.find(':');
+        if (firstColon != std::string::npos) {
+            // 提取错误类型
+            std::string errorType = errorMsg.substr(0, firstColon);
+            size_t secondColon = errorMsg.find(':', firstColon + 1);
+            if (secondColon != std::string::npos) {
+                // 提取行号
+                std::string lineStr = errorMsg.substr(firstColon + 1, secondColon - firstColon - 1);
+                // 提取错误说明
+                std::string description = errorMsg.substr(secondColon + 1);
+                // 按照实验要求的格式输出错误信息
+                std::cout << "Error type " << errorType << " at line " << lineStr << " : " << description << std::endl;
+            } else {
+                // 无法解析的异常格式
+                std::cout << "Error: " << errorMsg << std::endl;
+            }
+        } else {
+            // 无法解析的异常格式
+            std::cout << "Error: " << errorMsg << std::endl;
+        }
         return 1; // 错误码1表示编译失败
     }
 

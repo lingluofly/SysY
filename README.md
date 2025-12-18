@@ -1,6 +1,6 @@
 # SysY Compiler
 
-一个基于SysY语言的编译器实现。
+HDU编译原理课程实验四,使用C++语言,基于SysY语言的编译器实现。
 
 ## 项目结构
 
@@ -72,7 +72,7 @@ SysY/
 3. 运行CMake：`cmake ..`
 4. 编译项目：`cmake --build .`
 
-### 使用 MinGW-w64 构建
+### 使用 MinGW-w64 构建 (推荐)
 1. **配置环境变量**：将 MinGW-w64 的 `bin` 目录添加到系统 PATH（如：`E:\mingw64\bin`）
 2. **清理旧构建（可选）**：如果之前使用过其他编译器，删除旧的 build 目录：`rm -rf build`
 3. 创建build目录：`mkdir build`

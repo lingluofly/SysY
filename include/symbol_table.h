@@ -19,11 +19,15 @@ public:
     } value;
     enum class ValueType { NONE, INT, FLOAT } valueType;
     
+    // 函数相关字段
+    int paramCount; // 参数数量
+    std::vector<Type> paramTypes; // 参数类型列表
+    
     // 默认构造函数
-    SymbolEntry() : kind(Kind::VARIABLE), type(Type::INT), isArray(false), valueType(ValueType::NONE) {} 
+    SymbolEntry() : kind(Kind::VARIABLE), type(Type::INT), isArray(false), valueType(ValueType::NONE), paramCount(0) {} 
     
     SymbolEntry(Kind kind, Type type, bool isArray = false)
-        : kind(kind), type(type), isArray(isArray), valueType(ValueType::NONE) {}
+        : kind(kind), type(type), isArray(isArray), valueType(ValueType::NONE), paramCount(0) {}
 };
 
 class SymbolTable {

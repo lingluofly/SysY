@@ -12,24 +12,22 @@ private:
     Lexer& lexer;
     Token currentToken;
     
-    void eat(TokenType type);
-    
     // 解析方法
-    std::unique_ptr<CompUnit> parseCompUnit();
-    std::unique_ptr<Decl> parseDecl();
     std::unique_ptr<FuncDef> parseFuncDef();
-    std::unique_ptr<Stmt> parseStmt();
-    std::unique_ptr<Expr> parseExpr();
-    std::unique_ptr<Expr> parseAddExp();
-    std::unique_ptr<Expr> parseMulExp();
-    std::unique_ptr<Expr> parseUnaryExp();
+    std::unique_ptr<Expr> parseExpression();
+    std::unique_ptr<Expr> parseBinaryExpression();
+    std::unique_ptr<Expr> parseUnaryExpression();
+    std::unique_ptr<Expr> parsePrimaryExpression();
+    std::unique_ptr<Stmt> parseStatement();
     
     // 辅助方法
     void parseFuncParams(std::vector<std::unique_ptr<FuncFParam>>& params);
-    void parseVarDef();
+    std::unique_ptr<VarDecl> parseVarDef();
+    void parseStatementList(Block& block);
     void consumeToken(TokenType expectedType);
     
 public:
     Parser(Lexer& lexer);
     std::unique_ptr<CompUnit> parse();
+    size_t getLine() const { return lexer.getLine(); }
 };

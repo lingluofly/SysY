@@ -1,7 +1,33 @@
 # test_runner.ps1
+
+# 命令行参数定义
+param(
+    [switch]$Help,
+    [string]$Work = "all"
+)
+
+# 显示帮助信息
+if ($Help) {
+    Write-Host "=====================================================" -ForegroundColor Cyan
+    Write-Host "SysY 编译器自动化测试程序" -ForegroundColor Cyan
+    Write-Host "=====================================================" -ForegroundColor Cyan
+    Write-Host "用法: test_runner.ps1 [-Help] [-Work work_number]" -ForegroundColor Yellow
+    Write-Host ""
+    Write-Host "参数:"
+    Write-Host "  -Help: 显示此帮助信息"
+    Write-Host "  -Work: 指定要运行的work测试（1, 2, 3, 4或all）"
+    Write-Host ""
+    Write-Host "示例:"
+    Write-Host "  .\test_runner.ps1            # 运行所有测试"
+    Write-Host "  .\test_runner.ps1 -Work 3    # 只运行work3的测试"
+    Write-Host "  .\test_runner.ps1 -Help      # 显示帮助信息"
+    exit 0
+}
+
 function Run-Test {
     param(
-        [string]$TestFile
+        [string]$TestFile,
+        [bool]$ShouldFail = $false
     )
     
     try {
@@ -9,51 +35,189 @@ function Run-Test {
         $BaseName = [System.IO.Path]::GetFileNameWithoutExtension($TestFile)
         
         # 使用编译器编译
-        Write-Host "编译 $TestFile..."
-        $CompileResult = Start-Process -FilePath ".\sysy_compiler.exe" -ArgumentList @($TestFile) -Wait -NoNewWindow -PassThru
+        Write-Host "运行 $TestFile..." -NoNewline
+        $Output = & .\sysy_compiler.exe $TestFile 2>&1
+        $ExitCode = $LASTEXITCODE
         
-        if ($CompileResult.ExitCode -ne 0) {
-            Write-Host "✗ 编译失败 $TestFile" -ForegroundColor Red
-            return $false
+        if ($ShouldFail) {
+            if ($ExitCode -ne 0) {
+                Write-Host " ✓ [预期失败]" -ForegroundColor Green
+                return $true
+            } else {
+                Write-Host " ✗ [预期失败但通过]" -ForegroundColor Red
+                Write-Host "  输出: $Output" -ForegroundColor DarkGray
+                return $false
+            }
         } else {
-            Write-Host "✓ $TestFile 编译成功" -ForegroundColor Green
-            return $true
+            if ($ExitCode -eq 0) {
+                Write-Host " ✓ [通过]" -ForegroundColor Green
+                return $true
+            } else {
+                Write-Host " ✗ [失败]" -ForegroundColor Red
+                Write-Host "  退出码: $ExitCode" -ForegroundColor DarkGray
+                Write-Host "  输出: $Output" -ForegroundColor DarkGray
+                return $false
+            }
         }
     }
     catch {
-        Write-Host "✗ 运行 $TestFile 时出错: $_" -ForegroundColor Red
+        Write-Host " ✗ [运行错误]" -ForegroundColor Red
+        Write-Host "  错误: $_" -ForegroundColor DarkGray
         return $false
     }
 }
 
 function Test-All {
-    # 测试用例列表 - 相对于项目根目录
-    $TestFiles = @(
-        "..\tests\work1_test\basic_test.sy",
-        "..\tests\work1_test\array_loop_test.sy",
-        "..\tests\work1_test\condition_test.sy",
-        "..\tests\work1_test\function_test.sy",
-        "..\tests\work1_test\nested_loop_test.sy",
-        "..\tests\work1_test\variable_test.sy",
-        "..\tests\work1_test\while_loop_test.sy"
+    param(
+        [string]$Work = "all"
     )
     
-    $Passed = 0
-    $Total = $TestFiles.Count
+    # 测试用例配置 - 包含所有work任务的测试
+    $TestConfig = @(
+        # Work 1 测试用例 - 词法分析
+        @{
+            Work = "Work 1";
+            Description = "词法分析测试";
+            Tests = @(
+                "..\tests\work1_test\basic_test.sy",
+                "..\tests\work1_test\array_loop_test.sy",
+                "..\tests\work1_test\condition_test.sy",
+                "..\tests\work1_test\function_test.sy",
+                "..\tests\work1_test\nested_loop_test.sy",
+                "..\tests\work1_test\variable_test.sy",
+                "..\tests\work1_test\while_loop_test.sy"
+            );
+            ShouldFail = $false
+        },
+        
+        # Work 2 测试用例 - 语法分析
+        @{
+            Work = "Work 2";
+            Description = "语法分析测试";
+            Tests = @(
+                "..\tests\work2_test\example1.sy",
+                "..\tests\work2_test\example2.sy",
+                "..\tests\work2_test\example3.sy"
+            );
+            ShouldFail = $false
+        },
+        
+        # Work 2 错误测试用例
+        @{
+            Work = "Work 2";
+            Description = "语法分析错误测试";
+            Tests = @(
+                "..\tests\work2_test\example3_error1.sy",
+                "..\tests\work2_test\example3_error2.sy"
+            );
+            ShouldFail = $true
+        },
+        
+        # Work 3 测试用例 - 语法分析
+        @{
+            Work = "Work 3";
+            Description = "语法分析测试";
+            Tests = @(
+                "..\tests\work3_test\correct_syntax.sy",
+                "..\tests\work3_test\basic_variables.sy",
+                "..\tests\work3_test\array_program.sy",
+                "..\tests\work3_test\function_program.sy",
+                "..\tests\work3_test\multiple_declarations.sy",
+                "..\tests\work3_test\control_flow.sy"
+            );
+            ShouldFail = $false
+        },
+        
+        # Work 3 错误测试用例
+        @{
+            Work = "Work 3";
+            Description = "语法分析错误测试";
+            Tests = @(
+                "..\tests\work3_test\missing_semicolon.sy",
+                "..\tests\work3_test\mismatched_brackets.sy"
+            );
+            ShouldFail = $true
+        },
+        
+        # Work 4 测试用例 - 语义分析
+        @{
+            Work = "Work 4";
+            Description = "语义分析测试";
+            Tests = @(
+                "..\tests\work4_test\type_mismatch_return.sy",
+                "..\tests\work4_test\type_mismatch_operands.sy",
+                "..\tests\work4_test\undefined_variable.sy",
+                "..\tests\work4_test\undefined_function.sy",
+                "..\tests\work4_test\redefined_variable.sy",
+                "..\tests\work4_test\redefined_function.sy",
+                "..\tests\work4_test\wrong_argument_count.sy",
+                "..\tests\work4_test\non_integer_array_index.sy",
+                "..\tests\work4_test\const_assignment_error.sy",
+                "..\tests\work4_test\type_mismatch_assignment.sy"
+            );
+            ShouldFail = $true
+        }
+    )
     
-    Write-Host "开始运行测试..." -ForegroundColor Yellow
+    $GlobalPassed = 0
+    $GlobalTotal = 0
+    $WorkResults = @()
+    
+    Write-Host "=====================================================" -ForegroundColor Cyan
+    Write-Host "SysY 编译器自动化测试程序" -ForegroundColor Cyan
+    Write-Host "=====================================================" -ForegroundColor Cyan
     Write-Host ""
     
-    foreach ($TestFile in $TestFiles) {
-        if (Run-Test -TestFile $TestFile) {
-            $Passed++
+    # 运行每个work的测试用例
+    foreach ($Config in $TestConfig) {
+        # 根据指定的work过滤测试
+        if ($Work -ne "all" -and $Config.Work -notmatch "Work $Work") {
+            continue
         }
+        Write-Host "[$($Config.Work)] $($Config.Description)" -ForegroundColor Yellow
+        Write-Host "-----------------------------------------------------" -ForegroundColor Yellow
+        
+        $WorkPassed = 0
+        $WorkTotal = $Config.Tests.Count
+        $GlobalTotal += $WorkTotal
+        
+        foreach ($TestFile in $Config.Tests) {
+            if (Run-Test -TestFile $TestFile -ShouldFail $Config.ShouldFail) {
+                $WorkPassed++
+            }
+        }
+        
+        # 保存work的测试结果
+        $WorkResults += @{
+            Work = $Config.Work;
+            Description = $Config.Description;
+            Passed = $WorkPassed;
+            Total = $WorkTotal
+        }
+        
+        Write-Host "-----------------------------------------------------" -ForegroundColor Yellow
+        Write-Host "[$($Config.Work)] $($Config.Description): $WorkPassed/$WorkTotal 通过"
+        Write-Host ""
+        
+        $GlobalPassed += $WorkPassed
     }
     
-    Write-Host ""
-    Write-Host "测试完成: $Passed/$Total 通过" -ForegroundColor Yellow
+    # 打印汇总报告
+    Write-Host "=====================================================" -ForegroundColor Cyan
+    Write-Host "测试汇总报告" -ForegroundColor Cyan
+    Write-Host "=====================================================" -ForegroundColor Cyan
     
-    if ($Passed -eq $Total) {
+    foreach ($Result in $WorkResults) {
+        $Percentage = [math]::Round(($Result.Passed / $Result.Total) * 100, 2)
+        Write-Host "[$($Result.Work)] $($Result.Description): $($Result.Passed)/$($Result.Total) ($Percentage%)"
+    }
+    
+    Write-Host "-----------------------------------------------------" -ForegroundColor Cyan
+    $GlobalPercentage = [math]::Round(($GlobalPassed / $GlobalTotal) * 100, 2)
+    Write-Host "总测试结果: $GlobalPassed/$GlobalTotal ($GlobalPercentage%) 通过" -ForegroundColor Cyan
+    Write-Host "=====================================================" -ForegroundColor Cyan
+    
+    if ($GlobalPassed -eq $GlobalTotal) {
         return $true
     } else {
         return $false
@@ -122,10 +286,16 @@ if (-not (Test-Path -Path $CompilerPath -PathType Leaf)) {
     exit 1
 }
 
-# 运行所有测试
-$Success = Test-All
+
+
+# 运行测试
+$Success = Test-All -Work $Work
 if ($Success) {
+    Write-Host ""
+    Write-Host "🎉 所有测试通过！" -ForegroundColor Green
     exit 0
 } else {
+    Write-Host ""
+    Write-Host "❌ 部分测试失败！" -ForegroundColor Red
     exit 1
 }

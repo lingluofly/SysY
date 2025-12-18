@@ -1,0 +1,16 @@
+int add(int x, int y)
+{
+    return x + y;
+}
+
+// 重复定义同一个函数
+int add(int x, int y)
+{
+    return x - y;
+}
+
+int main()
+{
+    int a = add(5, 3);
+    return 0;
+}

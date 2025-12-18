@@ -1,0 +1,7 @@
+int main()
+{
+    const int a = 5;
+    // 错误：试图修改常量
+    a = 10;
+    return 0;
+}

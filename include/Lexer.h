@@ -26,4 +26,6 @@ public:
     Lexer(const std::string& source);
     Token getNextToken();
     Token peekToken();
+    Token peekToken(int n);
+    size_t getLine() const { return line; }
 };

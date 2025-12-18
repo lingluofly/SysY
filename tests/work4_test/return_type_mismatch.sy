@@ -1,0 +1,5 @@
+int main()
+{
+    // 错误：函数声明为返回int但返回float
+    return 3.14;
+}

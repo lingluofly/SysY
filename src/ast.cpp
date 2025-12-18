@@ -95,3 +95,9 @@ void Block::accept(ASTVisitor& visitor) {
 void ExprStmt::accept(ASTVisitor& visitor) {
     visitor.visit(*this);
 }
+
+// 声明语句节点的accept方法实现
+// 调用访问者的visit方法，实现访问者模式
+void DeclStmt::accept(ASTVisitor& visitor) {
+    visitor.visit(*this);
+}

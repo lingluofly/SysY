@@ -1,0 +1,12 @@
+int a, b, c;
+float x, y;
+
+int main()
+{
+    a = 1;
+    b = 2;
+    c = a + b;
+    x = 3.14;
+    y = x * 2;
+    return 0;
+}

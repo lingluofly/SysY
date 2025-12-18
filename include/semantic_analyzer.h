@@ -32,6 +32,7 @@ public:
     void visit(VarDef& node) override;
     void visit(FuncFParam& node) override;
     void visit(ExprStmt& node) override;
+    void visit(DeclStmt& node) override;
     
     void checkTypeCompatibility(Type t1, Type t2, const std::string& context);
     void checkArrayDimensions(const std::vector<std::unique_ptr<Expr>>& indices, 
