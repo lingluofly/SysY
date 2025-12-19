@@ -26,3 +26,5 @@ Makefile
 # 文档转换文件
 *.docx~ 
 *.md~
+
+.vscode/
