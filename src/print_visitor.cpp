@@ -1,6 +1,6 @@
-#include "print_visitor.h"
-#include "ast.h"
-#include "token.h"
+#include "../include/print_visitor.h"
+#include "../include/ast.h"
+#include "../include/token.h"
 #include <iostream>
 
 // 构造函数

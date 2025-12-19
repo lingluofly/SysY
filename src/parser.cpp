@@ -1,10 +1,8 @@
 #include "../include/Lexer.h"
 #include "../include/token.h"
 #include "../include/ast.h"
-#include "../include/parser.h"
+#include "../include/Parser.h"
 #include <stdexcept>
-#include "Parser.h"
-#include "ast.h"
 #include <memory>
 
 // 语法分析器构造函数
