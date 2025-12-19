@@ -487,7 +487,6 @@ std::unique_ptr<Stmt> Parser::parseStatement() {
             consumeToken(TokenType::RPAREN);
             
             // 解析then语句块
-            // 解析then语句块
             std::unique_ptr<Stmt> thenStmt;
             if (currentToken.type == TokenType::LBRACE) {
                 // 语句块

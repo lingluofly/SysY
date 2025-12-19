@@ -3,43 +3,47 @@
 #include <string>
 #include <variant>
 
+// Token类型枚举 - 定义SysY语言中所有可能的词法单元类型
 enum class TokenType {
-    // 关键字
+    // 关键字：SysY语言的保留字
     INT, FLOAT, CONST, VOID, IF, ELSE, WHILE, BREAK, CONTINUE, RETURN,
     
-    // 类型
+    // 类型：用于声明和定义的类型说明符
     INT_TYPE, FLOAT_TYPE, VOID_TYPE,
     
-    // 标识符和常量
+    // 标识符和常量：程序中的变量名、函数名和字面量
     IDENT, INT_CONST, FLOAT_CONST,
     
-    // 运算符
+    // 运算符：算术、比较、逻辑和赋值运算符
     PLUS, MINUS, MUL, DIV, MOD,
     ASSIGN, EQ, NE, LT, GT, LE, GE,
     AND, OR, NOT,
     INCREMENT, DECREMENT,
     
-    // 分隔符
+    // 分隔符：用于分隔代码结构的符号
     LPAREN, RPAREN, LBRACKET, RBRACKET,
     LBRACE, RBRACE, SEMICOLON, COMMA,
     
-    // 特殊
+    // 特殊：文件结束标记和未知标记
     END_OF_FILE, UNKNOWN
 };
 
+// Token结构体 - 表示从源代码中解析出的单个词法单元
 struct Token {
-public:  // 添加公共访问修饰符
-    TokenType type;
-    enum class ValueType { INT_VAL, FLOAT_VAL, STRING_VAL } valueType;
+public:  // 公共访问修饰符
+    TokenType type;          // Token的类型
+    enum class ValueType { INT_VAL, FLOAT_VAL, STRING_VAL } valueType; // 值的类型
     union {
-        int intValue;
-        float floatValue;
+        int intValue;        // 整数值（用于整数常量）
+        float floatValue;    // 浮点数值（用于浮点常量）
     };
-    std::string stringValue;
-    std::string errorMessage; // 错误信息
-    int line;
-    int column;
+    std::string stringValue; // 字符串值（用于标识符、关键字等）
+    std::string errorMessage; // 错误信息（当Token类型为UNKNOWN时使用）
+    int line;               // Token所在的行号（用于错误报告）
+    int column;             // Token所在的列号（用于错误报告）
     
+    // 将Token转换为字符串表示
+    // 用于调试和输出词法分析结果
     std::string toString() const {
         switch (type) {
             // 关键字
