@@ -26,7 +26,6 @@ set(HEADERS
     include/Lexer.h
     include/Parser.h
     include/ast.h
-    include/ir.h
     include/semantic_analyzer.h
     include/symbol_table.h
     include/token.h
